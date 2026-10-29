@@ -300,6 +300,8 @@ export default function MultiplayerPage() {
           <p role="status">
             {busy
               ? 'Preparing your connection…'
+              : status === 'retrying'
+                ? 'Trying the connection in the other direction… Keep both tabs visible.'
               : status === 'connecting'
                 ? 'Connecting to your friend…'
                 : status === 'waiting'

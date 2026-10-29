@@ -13,7 +13,8 @@ function namespace() {
 
 // PeerServer only handles discovery/signaling; gameplay stays on the data channel.
 export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
-  let peer, channel, closed = false, timer, registrationTimer, rejectPending, heartbeat;
+  let peer, channel, closed = false, timer, registrationTimer, rejectPending, heartbeat, reverseTimer;
+  let isHost = false, remotePeer = '', reversed = false;
   let lastPacket = 0;
   const stopTimer = () => clearTimeout(timer);
   function close() {
@@ -22,6 +23,7 @@ export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
     stopTimer();
     clearTimeout(registrationTimer);
     clearInterval(heartbeat);
+    clearTimeout(reverseTimer);
     rejectPending?.(Error('Connection cancelled.'));
     rejectPending = null;
     channel?.close();
@@ -37,17 +39,31 @@ export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
     stopTimer();
     timer = setTimeout(() => fail(message), ms);
   }
-  function bind(connection) {
-    if (closed || channel || connection.metadata?.app !== 'typefight-v2') {
+  function bind(connection, replacing = false) {
+    const expectedReverse = !isHost && !channel?.open && remotePeer === connection.peer && connection.metadata?.reverse === true;
+    if (closed || (channel && !replacing && !expectedReverse) || connection.metadata?.app !== 'typefight-v2') {
       connection.close();
       return;
     }
+    const previous = channel;
     channel = connection;
-    onStatus('connecting');
-    deadline(30000, 'Could not connect on this network. Try another Wi-Fi or turn off your VPN, then create a new room.');
+    if (isHost) remotePeer = connection.peer;
+    previous?.close();
+    onStatus(connection.metadata?.reverse ? 'retrying' : 'connecting');
+    deadline(30000, 'The direct connection timed out. Keep both game tabs visible and try swapping who creates the room. If that still fails, these networks may need a TURN relay.');
+    if (isHost && !reversed) {
+      reverseTimer = setTimeout(() => {
+        if (closed || channel?.open) return;
+        reversed = true;
+        bind(peer.connect(remotePeer, {
+          reliable: true, serialization: 'json', metadata: { app: 'typefight-v2', reverse: true },
+        }), true);
+      }, 10000);
+    }
     channel.on('open', () => {
-      if (closed) return;
+      if (closed || channel !== connection) return;
       stopTimer();
+      clearTimeout(reverseTimer);
       lastPacket = Date.now();
       heartbeat = setInterval(() => {
         if (Date.now() - lastPacket > 12000) {
@@ -61,7 +77,7 @@ export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
       onOpen();
     });
     channel.on('data', data => {
-      if (closed || typeof data !== 'string' || data.length > 60000) return;
+      if (closed || channel !== connection || typeof data !== 'string' || data.length > 60000) return;
       try {
         const message = JSON.parse(data);
         lastPacket = Date.now();
@@ -70,11 +86,14 @@ export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
       } catch { /* Ignore malformed peer packets. */ }
     });
     channel.on('close', () => {
-      if (closed) return;
+      if (closed || channel !== connection || !lastPacket) return;
       close();
       onStatus('disconnected');
     });
-    channel.on('error', () => fail('The connection was interrupted. Create a new room and try again.'));
+    channel.on('error', () => {
+      if (!closed && channel === connection && lastPacket) fail('The connection was interrupted. Create a new room and try again.');
+      // Before opening, allow the reverse attempt or the bounded deadline to finish.
+    });
   }
   async function register(id) {
     if (closed) throw Error('Connection cancelled.');
@@ -84,7 +103,7 @@ export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
     });
     const current = peer;
     let registered = false;
-    current.on('connection', bind);
+    current.on('connection', connection => bind(connection));
     await new Promise((resolve, reject) => {
       rejectPending = reject;
       registrationTimer = setTimeout(() => reject(Error('Room service is not responding. Please try again shortly.')), 15000);
@@ -97,6 +116,7 @@ export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
       current.on('error', error => {
         clearTimeout(registrationTimer);
         if (closed || current !== peer) return;
+        if (error.type === 'webrtc' && channel && !lastPacket) return;
         const message = error.type === 'peer-unavailable'
           ? 'Room not found. Check the four-character code and ask your friend to keep the room open.'
           : 'Room service could not connect. Please try again shortly.';
@@ -113,6 +133,7 @@ export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
   }
   return {
     async host() {
+      isHost = true;
       for (let attempt = 0; attempt < 5; attempt++) {
         const code = roomCode();
         try { await register(namespace() + code); }
@@ -129,10 +150,12 @@ export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
       throw Error('Could not reserve a room. Please try again.');
     },
     async join(code) {
+      isHost = false;
       if (!validRoomCode(code)) throw Error('Enter the four-character room code, for example K7MP.');
       await register(undefined);
       if (closed) throw Error('Connection cancelled.');
-      bind(peer.connect(namespace() + code, {
+      remotePeer = namespace() + code;
+      bind(peer.connect(remotePeer, {
         reliable: true, serialization: 'json', metadata: { app: 'typefight-v2' },
       }));
       return code;
