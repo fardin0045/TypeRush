@@ -107,6 +107,9 @@
   color: #9cf3e0;
   background: #081521;
 }
+.peer-lobby .relay-option { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #bdd1de; }
+.peer-lobby .relay-option input { width: 16px; height: 16px; accent-color: #78e1ed; }
+.peer-lobby .relay-status { font-size: 12px; color: #9cddcf; }
 .peer-lobby small {
   display: block;
   line-height: 1.7;

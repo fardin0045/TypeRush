@@ -1,5 +1,7 @@
 # TypeRush
 
+For friends on restrictive networks, relay support is now available through a Vercel function. Follow [TURN-SETUP.md](TURN-SETUP.md) to add the two server-only Cloudflare credentials and redeploy. Without this setup, connections remain direct-only. Static ZIP uploads do not deploy the relay credential function.
+
 A playable, browser-local typing racing game built with React, Vite, Tailwind CSS, Lucide icons, and custom animated SVG cars. No account, API key, database, or WebGL required.
 
 For production release and free hosting instructions, see [DEPLOYMENT.md](DEPLOYMENT.md). TypeFight is available at `/#/fight`; game selection is at `/#/games`.

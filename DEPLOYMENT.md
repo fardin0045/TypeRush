@@ -1,5 +1,7 @@
 # Deploy TypeRush + TypeFight
 
+For friends on restrictive networks, relay support is now available through a Vercel function. Follow [TURN-SETUP.md](TURN-SETUP.md) to add the two server-only Cloudflare credentials and redeploy. Without this setup, connections remain direct-only. Static ZIP uploads do not deploy the relay credential function.
+
 This release is a static browser game. Solo racing and fighting opponents are AI; friend matches connect two browsers directly. Solo scores and preferences are saved only in the current browser. No backend, database, login, paid API or environment variables are required. Four-character-room TypeFight is available at `/#/fight/friend`; see [MULTIPLAYER.md](MULTIPLAYER.md). Global leaderboards are not included.
 
 ## Prepare a release
@@ -84,4 +86,4 @@ TypeFight now supports two devices using one four-character room code and automa
 
 ## Release limits
 
-This is ready for a static-hosted casual game release after the local checks pass. It is not a ranked multiplayer service: the host browser is trusted, latency can favor the host, and direct WebRTC cannot connect on every network without a TURN relay. Real-device and public-URL checks remain necessary after deployment. No hosted account, domain or deployment is created by preparing this package.
+This is ready for a static-hosted casual game release after the local checks pass. It is not a ranked multiplayer service: the host browser is trusted, latency can favor the host, and direct WebRTC cannot connect on every network; configure the optional TURN relay for broader compatibility. Real-device and public-URL checks remain necessary after deployment. No hosted account, domain or deployment is created by preparing this package.

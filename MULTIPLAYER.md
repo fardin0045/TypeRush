@@ -1,5 +1,7 @@
 # TypeFight: play a friend
 
+For friends on restrictive networks, relay support is now available through a Vercel function. Follow [TURN-SETUP.md](TURN-SETUP.md) to add the two server-only Cloudflare credentials and redeploy. Without this setup, connections remain direct-only. Static ZIP uploads do not deploy the relay credential function.
+
 Both players must open the same deployed HTTPS website, then TypeFight → Play a friend.
 
 1. Host chooses a difficulty and clicks **Create room**.
@@ -13,7 +15,7 @@ No reply code, account, API key or database setup is needed. Keep both tabs visi
 
 PeerJS Cloud (https://0.peerjs.com and wss://0.peerjs.com) provides the free shared signaling service. It maps the short code to the host and exchanges connection details automatically. Google STUN helps discover network addresses. Game state travels directly between browsers over WebRTC. Scores are not stored on the service. Rooms are scoped to the website origin: use the same production website, not different preview URLs.
 
-This depends on a public shared service. Its availability is outside this project's control. PeerJS recommends a dedicated PeerServer for high traffic. There is no TURN relay: some mobile, corporate, VPN and restrictive NAT networks cannot connect directly. Short codes simplify joining but do not remove that network limitation.
+This depends on a public shared service. Its availability is outside this project's control. PeerJS recommends a dedicated PeerServer for high traffic. Without the optional TURN setup, there is no relay: some mobile, corporate, VPN and restrictive NAT networks cannot connect directly. Short codes simplify joining but do not remove that network limitation.
 
 Official references: https://peerjs.com/server/cloud and https://peerjs.com/client/faq
 

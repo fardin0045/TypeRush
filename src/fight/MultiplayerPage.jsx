@@ -15,6 +15,8 @@ export default function MultiplayerPage() {
     [error, setError] = useState(''),
     [incoming, setIncoming] = useState(''),
     [outgoing, setOutgoing] = useState(''),
+    [forceRelay, setForceRelay] = useState(false),
+    [relayStatus, setRelayStatus] = useState(''),
     [level, setLevel] = useState('Normal'),
     [sound, setSound] = useState(() => !!load().sound),
     [reduced, setReduced] = useState(
@@ -100,10 +102,17 @@ export default function MultiplayerPage() {
     epoch.current = 1;
     setOutgoing('');
     setStatus('gathering');
+    setRelayStatus('');
     model.current = versusMatch(level);
     last.current = performance.now();
     try {
       const p = createRoomPeer({
+        forceRelay,
+        onRelayStatus: (enabled, reason) => {
+          if (alive.current && operation === version.current)
+            setRelayStatus(enabled ? 'Relay available for restricted networks.' : reason === 'not-configured'
+              ? 'Direct connection only — relay has not been configured.' : 'Relay service unavailable — trying a direct connection.');
+        },
         onOpen: () => {
           if (isHost) sendState();
         },
@@ -174,6 +183,7 @@ export default function MultiplayerPage() {
     setIncoming('');
     setError('');
     setBusy(false);
+    setRelayStatus('');
     model.current = versusMatch(level);
     refresh();
   }
@@ -240,6 +250,10 @@ export default function MultiplayerPage() {
           </p>
           {!role && (
             <>
+              <label className="relay-option">
+                <input type="checkbox" checked={forceRelay} onChange={e => setForceRelay(e.target.checked)} />
+                Use relay only (for connection troubleshooting)
+              </label>
               <label>
                 Word difficulty
                 <select value={level} onChange={(e) => setLevel(e.target.value)}>
@@ -313,6 +327,7 @@ export default function MultiplayerPage() {
                       : ''}
           </p>
           {error && <p role="alert">{error}</p>}
+          {relayStatus && <p className="relay-status">{relayStatus}</p>}
           {role && (
             <button className="secondary" onClick={leave}>
               Start over
@@ -320,7 +335,7 @@ export default function MultiplayerPage() {
           )}
           <small>
             Free room matching powered by PeerJS. No sign-up. Share the code privately; anyone
-            who knows it can join. Some networks may block direct connections.
+            who knows it can join. Restricted networks need the website’s relay service enabled.
           </small>
         </section>
       ) : (

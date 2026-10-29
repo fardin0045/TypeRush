@@ -1,4 +1,5 @@
 import Peer from 'peerjs';
+import { loadIceConfiguration } from './ice.js';
 
 const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 export const validRoomCode = (code) => /^[A-HJ-NP-Z2-9]{4}$/.test(code);
@@ -12,7 +13,9 @@ function namespace() {
 }
 
 // PeerServer only handles discovery/signaling; gameplay stays on the data channel.
-export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
+export function createRoomPeer({ onOpen, onMessage, onStatus, onError, onRelayStatus = () => {}, forceRelay = false }) {
+  const abort = new AbortController();
+  let ice;
   let peer, channel, closed = false, timer, registrationTimer, rejectPending, heartbeat, reverseTimer;
   let isHost = false, remotePeer = '', reversed = false;
   let lastPacket = 0;
@@ -20,6 +23,7 @@ export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
   function close() {
     if (closed) return;
     closed = true;
+    abort.abort();
     stopTimer();
     clearTimeout(registrationTimer);
     clearInterval(heartbeat);
@@ -50,7 +54,9 @@ export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
     if (isHost) remotePeer = connection.peer;
     previous?.close();
     onStatus(connection.metadata?.reverse ? 'retrying' : 'connecting');
-    deadline(30000, 'The direct connection timed out. Keep both game tabs visible and try swapping who creates the room. If that still fails, these networks may need a TURN relay.');
+    deadline(30000, ice?.relay
+      ? 'Connection timed out even with relay support. Keep both tabs visible, create a fresh room and try again.'
+      : 'Direct connection failed. Relay is not enabled on this website. The owner needs to configure TURN for restricted networks.');
     if (isHost && !reversed) {
       reverseTimer = setTimeout(() => {
         if (closed || channel?.open) return;
@@ -97,9 +103,14 @@ export function createRoomPeer({ onOpen, onMessage, onStatus, onError }) {
   }
   async function register(id) {
     if (closed) throw Error('Connection cancelled.');
+    if (!ice) {
+      ice = await loadIceConfiguration(abort.signal, forceRelay);
+      if (closed) throw Error('Connection cancelled.');
+      onRelayStatus(ice.relay, ice.reason);
+    }
     peer = new Peer(id, {
       host: '0.peerjs.com', port: 443, secure: true, path: '/', debug: 0,
-      config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] },
+      config: ice.config,
     });
     const current = peer;
     let registered = false;

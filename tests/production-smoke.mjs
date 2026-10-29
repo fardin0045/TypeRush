@@ -3,6 +3,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
 import assert from 'node:assert/strict';
 import { chromium } from '@playwright/test';
+import { POST as iceCredentials } from '../api/ice.js';
 const root = resolve('dist');
 const headerText = await readFile(resolve(root, '_headers'), 'utf8');
 const headers = {};
@@ -23,6 +24,14 @@ const mime = {
 const server = createServer(async (req, res) => {
   try {
     const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
+    if (pathname === '/api/ice' && req.method === 'POST') {
+      const response = await iceCredentials(new Request('http://127.0.0.1:5177/api/ice', {
+        method: 'POST', headers: { origin: req.headers.origin || '' },
+      }));
+      res.writeHead(response.status, Object.fromEntries(response.headers));
+      res.end(await response.text());
+      return;
+    }
     const file = resolve(root, '.' + (pathname === '/' ? '/index.html' : pathname));
     if (!file.startsWith(root + sep) || !(await stat(file)).isFile()) throw Error();
     res.writeHead(200, {

@@ -7,7 +7,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test tests/engine.test.js tests/combat.test.js",
+    "test": "node --test tests/engine.test.js tests/combat.test.js tests/ice.test.js",
     "test:fight-browser": "node tests/fight-browser.mjs",
     "check": "npm test && npm run build && node tests/production-smoke.mjs",
     "test:multiplayer-browser": "node tests/multiplayer-browser.mjs",
