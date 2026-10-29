@@ -1,0 +1,12 @@
+node_modules/
+dist/
+test-results/
+
+.env
+.env.*
+!.env.example
+release/
+playwright-report/
+tests/*.png
+*.log
+.vercel/

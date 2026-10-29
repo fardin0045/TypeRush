@@ -1,0 +1,1030 @@
+.game-nav-link {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #aab7c5;
+}
+.game-nav-link:hover {
+  color: #8af5c1;
+}
+.fight-page {
+  height: 100dvh;
+  overflow: auto;
+  background: #080f1c;
+  color: #e6f2f6;
+  font-family: Inter, Arial, sans-serif;
+}
+.fight-nav {
+  height: 62px;
+  padding: 0 4%;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #263344;
+  background: #0b1422;
+}
+.fight-brand {
+  display: flex;
+  align-items: center;
+  font-weight: 850;
+  font-size: 23px;
+  letter-spacing: -1px;
+  gap: 7px;
+}
+.fight-brand svg {
+  color: #72def7;
+}
+.fight-brand span {
+  color: #72def7;
+  margin-left: -7px;
+}
+.fight-game-links {
+  display: flex;
+  gap: 27px;
+  margin-left: 55px;
+  height: 100%;
+  align-items: center;
+}
+.fight-game-links a {
+  font-size: 12px;
+  color: #8397a9;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  border-bottom: 2px solid transparent;
+}
+.fight-game-links a.active {
+  color: #b7edff;
+  border-color: #6fdef8;
+}
+.fight-tools {
+  display: flex;
+  margin-left: auto;
+  gap: 12px;
+}
+.fight-tools button {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  color: #b6c7d3;
+}
+.fight-tools button:hover {
+  background: #1d3042;
+}
+.fight-content {
+  max-width: 1500px;
+  margin: auto;
+  padding: 24px 4% 18px;
+}
+.fight-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 19px;
+  gap: 15px;
+}
+.fight-kicker {
+  display: block;
+  color: #8aa7bd;
+  font: 9px monospace;
+  letter-spacing: 2.6px;
+}
+.fight-title h1 {
+  font-size: 29px;
+  letter-spacing: -1.2px;
+  margin: 9px 0 0;
+}
+.fight-title h1 em {
+  color: #77dcff;
+}
+.fight-options {
+  display: flex;
+  gap: 10px;
+}
+.fight-options select {
+  background: #142031;
+  border-color: #304359;
+  font-size: 11px;
+  padding: 10px 25px 10px 12px;
+}
+.fight-stage {
+  height: clamp(420px, 66dvh, 720px);
+  position: relative;
+  border: 1px solid #33465a;
+  border-radius: 14px;
+  background: #0e1a2a;
+  overflow: hidden;
+}
+.combat-hud {
+  position: absolute;
+  top: 23px;
+  left: 25px;
+  right: 25px;
+  display: flex;
+  gap: 23px;
+  align-items: flex-start;
+  z-index: 3;
+}
+.health-card {
+  flex: 1;
+}
+.health-card > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.health-card strong {
+  font: 900 13px monospace;
+  letter-spacing: 1px;
+}
+.health-card span {
+  font: 8px monospace;
+  letter-spacing: 1px;
+  color: #8c9fac;
+}
+.health-card b {
+  margin-left: auto;
+  font: 20px monospace;
+}
+.health-card small {
+  font-size: 10px;
+  color: #7b92a5;
+}
+.health-track {
+  height: 10px;
+  background: #1d3140;
+  margin-top: 10px;
+  transform: skew(-12deg);
+  border: 1px solid #4c6b7966;
+  overflow: hidden;
+}
+.health-track i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #34a8e3, #88efff);
+  transition: width 0.35s ease-out;
+  box-shadow: 0 0 20px #65dcff55;
+}
+.health-card.enemy .health-track i {
+  background: linear-gradient(90deg, #ff987d, #ff5b90);
+  float: right;
+}
+.health-card.enemy strong {
+  color: #ff98b0;
+}
+.health-card.player strong {
+  color: #8eeaff;
+}
+.health-card p {
+  font: 8px monospace;
+  letter-spacing: 1.2px;
+  color: #778fa3;
+  margin-top: 9px;
+}
+.health-card.enemy p {
+  text-align: right;
+}
+.round-badge {
+  text-align: center;
+  min-width: 75px;
+}
+.round-badge span {
+  font: 8px monospace;
+  color: #9cb6c9;
+  letter-spacing: 1.2px;
+}
+.round-badge strong {
+  display: block;
+  font: 22px monospace;
+  margin-top: 6px;
+  color: #d4e2e9;
+}
+.fighting-arena {
+  position: absolute;
+  inset: 0 0 130px;
+}
+.fighting-arena canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.arena-location {
+  position: absolute;
+  bottom: 9px;
+  left: 22px;
+  color: #9cb5ca;
+  font: 8px monospace;
+  letter-spacing: 1.2px;
+}
+.arena-location i {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #68d7f3;
+  margin-right: 6px;
+}
+.arena-location span {
+  margin-left: 15px;
+  color: #678397;
+  font-size: 7px;
+}
+.fight-live-message {
+  position: absolute;
+  top: 23%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  pointer-events: none;
+  text-align: center;
+  white-space: nowrap;
+}
+.fight-live-message strong {
+  font: 900 italic clamp(24px, 4vw, 56px) Arial;
+  color: #98edff;
+  text-shadow: 0 0 22px #40a8f766;
+}
+.fight-live-message > span {
+  margin-top: 8px;
+  font: 8px monospace;
+  letter-spacing: 1.4px;
+  color: #c0d6e3;
+  background: #091522b8;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+.fight-live-message button {
+  pointer-events: auto;
+  background: #91e7fa;
+  color: #0b2734;
+  padding: 10px 20px;
+  border-radius: 5px;
+  display: flex;
+  gap: 7px;
+  font-size: 12px;
+  margin-top: 14px;
+}
+.fight-side-note {
+  position: absolute;
+  left: 24px;
+  top: 40%;
+  z-index: 2;
+}
+.fight-side-note > span {
+  font: 7px monospace;
+  letter-spacing: 1.8px;
+  color: #7796ad;
+}
+.fight-side-note strong {
+  display: block;
+  font: 700 42px monospace;
+  color: #83dff5;
+}
+.fight-side-note small {
+  font-size: 22px;
+}
+.fight-side-note p {
+  font: 8px monospace;
+  color: #8ca7b9;
+  margin-top: 5px;
+  max-width: 120px;
+  line-height: 1.7;
+}
+.challenge-card {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(620px, calc(100% - 40px));
+  border: 1px solid #365568;
+  border-top: 2px solid #77def4;
+  background: linear-gradient(120deg, #142837f5, #0d1c2bf5);
+  border-radius: 9px;
+  padding: 13px 19px 11px;
+  z-index: 6;
+  cursor: text;
+  box-shadow: 0 8px 25px #040d1a66;
+}
+.challenge-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font: 8px monospace;
+  color: #93aec0;
+  letter-spacing: 1px;
+}
+.challenge-meta > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.fight-word {
+  font:
+    600 clamp(22px, 3vw, 36px)/1.4 Consolas,
+    monospace;
+  letter-spacing: 1px;
+  text-align: center;
+  color: #a9c2d4;
+  margin: 10px 0;
+  white-space: pre-wrap;
+}
+.fight-word .done {
+  color: #81edcf;
+}
+.fight-word .current {
+  background: #6cd8ed20;
+  color: #ecfaff;
+  border-bottom: 2px solid #85e9ff;
+}
+.fight-word .bad {
+  background: #ec4d7044;
+  color: #ffb6c6;
+  border-color: #ff8ea8;
+}
+.fight-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  opacity: 0;
+  padding: 0;
+  border: 0;
+  font-size: 16px;
+}
+.challenge-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font: 8px monospace;
+  color: #8ba8bb;
+  min-height: 29px;
+}
+.fight-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  background: #85def5;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #102333 !important;
+}
+.fight-primary:hover {
+  background: #b2f1ff;
+}
+.enemy-progress {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 7px;
+  font: 6px monospace;
+  letter-spacing: 1px;
+  color: #c18b9c;
+}
+.enemy-progress > div {
+  height: 2px;
+  background: #e2678a22;
+  flex: 1;
+}
+.enemy-progress i {
+  height: 2px;
+  display: block;
+  background: #f17d9c;
+  transition: width 0.12s linear;
+}
+.enemy-text {
+  color: #ff90aa !important;
+}
+.fight-bottom {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+.stance-select {
+  display: flex;
+  gap: 5px;
+  border: 1px solid #2d4054;
+  border-radius: 7px;
+  padding: 4px;
+  background: #0d1828;
+}
+.stance-select button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  padding: 9px 12px;
+  border-radius: 4px;
+  color: #9cb2c6;
+}
+.stance-select button.selected {
+  background: #254259;
+  color: #b5f1ff;
+}
+.stance-description {
+  font-size: 10px;
+  color: #829db3;
+  flex: 1;
+}
+.motion-setting {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  color: #8da5b9;
+}
+.motion-setting input {
+  accent-color: #7dddf5;
+}
+.end-practice {
+  font-size: 10px;
+  color: #c0dbea;
+}
+.fight-help {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font: 8px monospace;
+  color: #658198;
+  margin-top: 16px;
+}
+.fight-help kbd {
+  border: 1px solid #344b60;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 7px;
+}
+.fight-help a {
+  color: #a6c3d7;
+}
+.fight-result-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  background: #040b16d9;
+  backdrop-filter: blur(10px);
+  padding: 20px;
+}
+.fight-result {
+  background: linear-gradient(135deg, #152c3a, #0e1929);
+  border: 1px solid #467384;
+  border-radius: 17px;
+  padding: 32px;
+  width: min(620px, 100%);
+  max-height: 92dvh;
+  overflow: auto;
+  text-align: center;
+}
+.fight-result > svg {
+  color: #8ce5fa;
+  margin: auto auto 17px;
+}
+.fight-result h2 {
+  font: 800 45px Arial;
+  margin: 13px 0 10px;
+  letter-spacing: -1.8px;
+}
+.fight-result p {
+  font-size: 12px;
+  color: #9eb6c8;
+}
+.fight-result-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px 15px;
+  border-top: 1px solid #334c60;
+  border-bottom: 1px solid #334c60;
+  padding: 25px 0;
+  margin: 25px 0;
+}
+.fight-result-grid strong {
+  display: block;
+  font: 24px monospace;
+  color: #97e9fa;
+}
+.fight-result-grid span {
+  display: block;
+  font: 7px monospace;
+  letter-spacing: 0.5px;
+  color: #96adbd;
+  margin-top: 8px;
+}
+.fight-result-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-size: 11px;
+}
+.fight-reduced * {
+  animation: none !important;
+  transition: none !important;
+}
+.game-selection {
+  height: 100dvh;
+  overflow: auto;
+  padding: 42px max(24px, calc((100vw - 1050px) / 2));
+  background: radial-gradient(ellipse at 80% 50%, #153d4933, transparent 65%), #0b1220;
+}
+.game-selection > .fight-brand {
+  margin-bottom: 60px;
+}
+.game-selection > h1 {
+  font-size: 58px;
+  margin: 18px 0;
+  letter-spacing: -2.5px;
+}
+.game-selection h1 em {
+  color: #83e8df;
+}
+.game-selection > p {
+  color: #9aafc0;
+  font-size: 14px;
+}
+.game-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-top: 38px;
+}
+.game-cards > a {
+  background: linear-gradient(145deg, #17362c55, #111e2c);
+  border: 1px solid #38534d;
+  border-radius: 14px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
+}
+.game-cards > a:hover {
+  transform: translateY(-4px);
+  border-color: #83e8df;
+}
+.game-cards > a:last-child {
+  background: linear-gradient(145deg, #163b5255, #171c30);
+  border-color: #35536b;
+}
+.game-cards svg {
+  color: #85f0be;
+}
+.game-cards > a:last-child svg {
+  color: #85ddff;
+}
+.game-cards span {
+  font: 9px monospace;
+  letter-spacing: 1.4px;
+  color: #8eacb4;
+}
+.game-cards h2 {
+  font-size: 33px;
+  color: #e2f1ee;
+}
+.game-cards p {
+  font-size: 13px;
+  color: #9db4bd;
+  line-height: 1.8;
+}
+.game-cards b {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #354750;
+  padding-top: 20px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #b1e9d0;
+}
+@media (max-width: 900px) {
+  .fight-content {
+    padding: 18px 18px 15px;
+  }
+  .fight-nav {
+    padding: 0 18px;
+  }
+  .fight-title h1 {
+    font-size: 24px;
+  }
+  .health-card span {
+    display: none;
+  }
+  .fight-stage {
+    height: 65dvh;
+    min-height: 440px;
+  }
+  .fight-side-note {
+    left: 18px;
+  }
+  .stance-description {
+    font-size: 8px;
+    max-width: 170px;
+  }
+  .fight-bottom {
+    gap: 10px;
+  }
+  .fight-help {
+    font-size: 7px;
+  }
+  .game-selection > h1 {
+    font-size: 46px;
+  }
+}
+@media (max-width: 600px) {
+  .fight-nav {
+    height: 52px;
+    padding: 0 12px;
+  }
+  .fight-brand {
+    font-size: 20px;
+  }
+  .fight-brand svg {
+    width: 20px;
+  }
+  .fight-game-links {
+    margin-left: auto;
+    gap: 13px;
+  }
+  .fight-game-links a {
+    font-size: 9px;
+  }
+  .fight-game-links a.active {
+    display: none;
+  }
+  .fight-tools {
+    margin-left: 9px;
+    gap: 0;
+  }
+  .fight-tools button {
+    width: 27px;
+  }
+  .fight-content {
+    padding: 15px 10px;
+  }
+  .fight-title {
+    align-items: flex-start;
+    margin-bottom: 13px;
+  }
+  .fight-title h1 {
+    font-size: 20px;
+    max-width: 180px;
+    line-height: 1.2;
+  }
+  .fight-kicker {
+    font-size: 7px;
+    letter-spacing: 1.3px;
+  }
+  .fight-options {
+    gap: 5px;
+    flex-direction: column;
+  }
+  .fight-options select {
+    font-size: 9px;
+    padding: 6px 14px 6px 8px;
+  }
+  .fight-stage {
+    height: 62dvh;
+    min-height: 410px;
+    border-radius: 10px;
+  }
+  .combat-hud {
+    top: 17px;
+    left: 12px;
+    right: 12px;
+    gap: 10px;
+  }
+  .health-card strong {
+    font-size: 10px;
+  }
+  .health-card b {
+    font-size: 14px;
+  }
+  .health-card small {
+    font-size: 7px;
+  }
+  .health-card > div:first-child {
+    gap: 4px;
+  }
+  .health-track {
+    height: 8px;
+  }
+  .health-card p {
+    font-size: 6px;
+  }
+  .round-badge {
+    min-width: 50px;
+  }
+  .round-badge span {
+    font-size: 6px;
+  }
+  .round-badge strong {
+    font-size: 17px;
+  }
+  .fighting-arena {
+    bottom: 130px;
+  }
+  .fight-live-message {
+    top: 23%;
+  }
+  .fight-live-message strong {
+    font-size: 27px;
+  }
+  .fight-live-message > span {
+    font-size: 6px;
+    letter-spacing: 0.6px;
+  }
+  .fight-side-note {
+    left: 12px;
+    top: 36%;
+  }
+  .fight-side-note strong {
+    font-size: 27px;
+  }
+  .fight-side-note > span {
+    font-size: 6px;
+  }
+  .fight-side-note p {
+    max-width: 70px;
+    font-size: 6px;
+  }
+  .challenge-card {
+    width: calc(100% - 22px);
+    padding: 10px 12px;
+    bottom: 11px;
+  }
+  .fight-word {
+    font-size: 25px;
+    letter-spacing: 0.2px;
+    margin: 8px 0;
+    line-height: 1.3;
+  }
+  .challenge-meta {
+    font-size: 6px;
+  }
+  .challenge-foot {
+    font-size: 7px;
+    gap: 7px;
+  }
+  .fight-primary {
+    font-size: 10px;
+    padding: 9px 11px;
+    white-space: nowrap;
+  }
+  .arena-location {
+    left: 12px;
+    bottom: 15px;
+    font-size: 6px;
+  }
+  .arena-location span {
+    display: none;
+  }
+  .fight-bottom {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .stance-select {
+    flex: 1;
+    justify-content: space-around;
+  }
+  .stance-select button {
+    padding: 7px 10px;
+    font-size: 9px;
+  }
+  .stance-description {
+    order: 3;
+    max-width: none;
+    flex-basis: 100%;
+    font-size: 9px;
+  }
+  .motion-setting {
+    font-size: 8px;
+  }
+  .fight-help > span:nth-child(2) {
+    display: none;
+  }
+  .fight-help {
+    font-size: 7px;
+    margin-top: 13px;
+  }
+  .fight-result {
+    padding: 24px 18px;
+  }
+  .fight-result h2 {
+    font-size: 35px;
+  }
+  .fight-result-grid {
+    gap: 20px 8px;
+  }
+  .fight-result-grid strong {
+    font-size: 19px;
+  }
+  .fight-result-grid span {
+    font-size: 6px;
+  }
+  .fight-result-actions {
+    gap: 12px;
+    font-size: 10px;
+  }
+  .game-selection {
+    padding: 25px 18px;
+  }
+  .game-selection > .fight-brand {
+    margin-bottom: 35px;
+  }
+  .game-selection > h1 {
+    font-size: 42px;
+  }
+  .game-cards {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 25px;
+  }
+  .game-cards > a {
+    padding: 23px;
+  }
+  .game-cards h2 {
+    font-size: 28px;
+  }
+  .app > header nav .game-nav-link {
+    font-size: 9px;
+  }
+  .app > header nav {
+    gap: 9px;
+  }
+  .app > header nav button:last-child {
+    display: none;
+  }
+}
+@media (max-height: 500px) {
+  .fight-title {
+    display: none;
+  }
+  .fight-content {
+    padding-top: 10px;
+  }
+  .fight-stage {
+    height: 410px;
+  }
+  .fight-nav {
+    height: 45px;
+  }
+  .game-selection > .fight-brand {
+    margin-bottom: 20px;
+  }
+}
+.keyboard-open {
+  height: var(--visible-height);
+}
+.keyboard-open .fight-title,
+.keyboard-open .fight-help,
+.keyboard-open .fight-side-note,
+.keyboard-open .stance-description {
+  display: none;
+}
+.keyboard-open .fight-content {
+  padding: 6px 8px;
+}
+.keyboard-open .fight-stage {
+  height: calc(var(--visible-height) - 110px);
+  min-height: 245px;
+}
+.keyboard-open .combat-hud {
+  top: 8px;
+}
+.keyboard-open .fighting-arena {
+  bottom: 105px;
+}
+.keyboard-open .challenge-card {
+  padding: 6px 10px;
+  bottom: 6px;
+}
+.keyboard-open .fight-word {
+  font-size: 20px;
+  margin: 4px 0;
+}
+.keyboard-open .fight-bottom {
+  margin-top: 6px;
+}
+.keyboard-open .health-card p,
+.keyboard-open .arena-location {
+  display: none;
+}
+.keyboard-open .fight-live-message {
+  top: 27%;
+}
+.keyboard-open .fight-live-message strong {
+  font-size: 20px;
+}
+@media (max-width: 700px) {
+  .app > header nav button {
+    display: none;
+  }
+  .app > header nav button.selected {
+    display: flex;
+  }
+  .app > header nav {
+    gap: 8px;
+  }
+}
+
+/* Keep the typing prompt floating over the stage instead of boxing it in. */
+.fight-page .fighting-arena {
+  inset: 0;
+}
+.fight-page .challenge-card {
+  width: min(570px, calc(100% - 30px));
+  padding: 8px 15px;
+  bottom: 13px;
+  background: linear-gradient(110deg, #10253470, #0a17283d);
+  border: 1px solid #93dff526;
+  border-top-color: #9ae9ff45;
+  border-radius: 9px;
+  box-shadow: none;
+  backdrop-filter: blur(5px);
+}
+.fight-page .challenge-meta {
+  font-size: 7px;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+.fight-page .challenge-meta svg {
+  width: 11px;
+  height: 11px;
+}
+.fight-page .fight-word {
+  font-size: clamp(22px, 2.6vw, 31px);
+  margin: 5px 0;
+  line-height: 1.3;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 8px #06101c;
+}
+.fight-page .challenge-foot {
+  min-height: 24px;
+  font-size: 7px;
+}
+.fight-page .challenge-foot .fight-primary {
+  padding: 7px 11px;
+}
+.fight-page .enemy-progress {
+  margin-top: 4px;
+}
+.fight-page .arena-location {
+  bottom: 17px;
+  max-width: 180px;
+  line-height: 1.7;
+}
+.fight-page .arena-location span {
+  display: block;
+  margin-left: 11px;
+}
+.fight-page .fight-live-message {
+  top: 20%;
+}
+@media (max-width: 600px) {
+  .fight-page .challenge-card {
+    padding: 8px 11px;
+    bottom: 10px;
+    width: calc(100% - 24px);
+  }
+  .fight-page .fight-word {
+    font-size: 24px;
+    margin: 5px 0;
+  }
+  .fight-page .challenge-meta {
+    font-size: 6px;
+  }
+  .fight-page .challenge-foot {
+    font-size: 6px;
+  }
+  .fight-page .arena-location {
+    display: none;
+  }
+  .fight-page .fight-live-message {
+    top: 23%;
+  }
+}
+.fight-page.keyboard-open .fighting-arena {
+  inset: 0;
+}
+.fight-page.keyboard-open .challenge-card {
+  padding: 5px 9px;
+  bottom: 5px;
+}
+.fight-page.keyboard-open .fight-word {
+  font-size: 19px;
+  margin: 3px 0;
+}

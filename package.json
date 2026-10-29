@@ -1,0 +1,31 @@
+{
+  "name": "typerush",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test tests/engine.test.js tests/combat.test.js",
+    "test:fight-browser": "node tests/fight-browser.mjs",
+    "check": "npm test && npm run build && node tests/production-smoke.mjs",
+    "test:multiplayer-browser": "node tests/multiplayer-browser.mjs",
+    "release": "powershell -NoProfile -File scripts/release.ps1"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "lucide-react": "^0.468.0",
+    "tailwindcss": "^4.1.0",
+    "@tailwindcss/vite": "^4.1.0"
+  },
+  "devDependencies": {
+    "vite": "^7.2.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "@playwright/test": "^1.56.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

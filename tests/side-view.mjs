@@ -1,0 +1,23 @@
+import {chromium} from '@playwright/test';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch({headless:true,channel:'chrome'});
+const page=await browser.newPage({viewport:{width:1536,height:864}});
+const errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto('http://127.0.0.1:5177');
+await page.getByRole('button',{name:'Start race',exact:true}).waitFor();
+async function layout(){assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight));for(const selector of ['.passage','.input-row input','.typing-bottom','.track']){const b=await page.locator(selector).boundingBox();assert.ok(b&&b.y>=0&&b.y+b.height<=page.viewportSize().height,selector);}assert.equal(await page.locator('.car').count(),4);}
+await layout();await page.screenshot({path:'tests/side-view-desktop.png'});
+await page.getByLabel('Difficulty',{exact:true}).selectOption('Easy');
+const passage=await page.getByLabel('Typing passage',{exact:true}).innerText();
+await page.getByRole('button',{name:'Start race',exact:true}).click();
+await page.waitForFunction(()=>!document.querySelector('.input-row input').disabled);
+const before=await page.locator('.car').first().boundingBox();
+await page.getByRole('textbox').pressSequentially(passage.slice(0,60),{delay:35});
+const after=await page.locator('.car').first().boundingBox();assert.ok(after.x>before.x+50,'player moves left to right');
+assert.ok(await page.locator('.car').evaluateAll(cars=>cars.slice(1).every(car=>parseFloat(car.style.left)>0)),'AI cars advance');
+await page.getByRole('textbox').pressSequentially(passage.slice(60),{delay:25});
+await page.getByRole('dialog',{name:'Race results'}).waitFor();
+await page.reload();await page.setViewportSize({width:390,height:844});await layout();await page.screenshot({path:'tests/side-view-mobile.png'});
+await page.setViewportSize({width:844,height:390});await layout();
+assert.deepEqual(errors,[]);
+console.log('PASS: original side-view car movement, all AI moving, complete race, desktop/mobile/landscape fit, no browser errors.');await browser.close();

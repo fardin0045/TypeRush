@@ -1,0 +1,40 @@
+/* Original side-on racing, expanded to the viewport behind the typing HUD. */
+.app .arena{--track-top:clamp(320px,40dvh,390px);--track-bottom:90px;--vehicle-width:clamp(85px,11vw,150px);position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:0;background:linear-gradient(#122936,#203a43 50%,#14242d);overflow:hidden}
+.app .arena-top{position:absolute;left:24px;right:24px;bottom:67px;top:auto;padding:0;background:none;font-size:9px}
+.app .skyline{position:absolute;inset:58px 0 auto;height:calc(var(--track-top) - 58px);padding:0;gap:12px;background:radial-gradient(ellipse at 65% 100%,#42747555,transparent 70%),linear-gradient(#162e3c,#25434a)}
+.app .skyline i{transform:scaleY(2);transform-origin:bottom;min-width:35px;flex:1}
+.app .track{position:absolute;top:var(--track-top);bottom:var(--track-bottom);left:0;right:0;display:flex;flex-direction:column;border-top-width:7px;border-bottom:7px solid #718b80}
+.app .lane{flex:1;min-height:0;height:auto;display:flex;align-items:center}
+.app .car-route{left:55px;right:calc(var(--vehicle-width) + 45px);top:0;height:100%}
+.app .car{width:var(--vehicle-width);top:50%;transform:translateY(-50%);transition:left .23s linear}
+.app .car svg{display:block;width:100%}
+.app .driver{font-size:9px;padding-top:0;margin-bottom:-3px}
+.app .driver small{font-size:7px}.app .lane-number{top:50%;transform:translateY(-50%);left:20px;font-size:18px}
+.app .lane-progress{top:50%;transform:translateY(-50%);right:10px;display:block;color:#b4ccc9;font-size:10px}
+.app .finish{right:60px;top:0;bottom:0;width:18px}.app .finish span{left:25px}
+.app .track-edge,.app .arena-bottom{display:none}
+.app .countdown{inset:var(--track-top) 0 var(--track-bottom);background:#0813199c;backdrop-filter:blur(3px)}
+.app .countdown strong{font-size:70px}.app .countdown>span{font-size:8px}.app .countdown p{font-size:10px}
+.app .typing-panel{border-top-color:#85f1bc}.app .typing-bottom .primary{background:#85f1bc}.app .typing-top>div>span:first-child b{color:#85f1bc}
+.app .arena-top{bottom:74px}
+@media(max-width:700px){.app .arena{--track-top:355px;--track-bottom:112px;--vehicle-width:90px}.app .skyline{top:48px;height:calc(var(--track-top) - 48px)}.app .arena-top{left:12px;right:auto;bottom:76px;font-size:7px}.app .arena-top>span:last-child{display:none}.app .car-route{left:25px;right:calc(var(--vehicle-width) + 25px)}.app .lane-number{left:7px;font-size:11px}.app .lane-progress{right:5px;font-size:7px}.app .finish{right:35px;width:12px;background-size:12px 12px}.app .finish span{left:16px;font-size:6px}.app .driver{font-size:7px}.app .driver small{display:none}.app .countdown strong{font-size:50px}.app .countdown p{display:none}}
+@media(max-height:700px) and (min-width:701px){.app .arena{--track-top:310px;--track-bottom:72px;--vehicle-width:100px}.app .arena-top{bottom:60px;font-size:7px}.app .driver{font-size:7px}.app .countdown strong{font-size:45px}}
+@media(max-height:600px) and (min-width:701px){.app .arena{--track-top:230px;--track-bottom:64px;--vehicle-width:60px}.app .driver{display:none}.app .arena-top{display:none}.app .countdown>span,.app .countdown p{display:none}}
+@media(max-height:700px) and (max-width:700px){.app .arena{--vehicle-width:64px}.app .driver{font-size:6px}}
+@media(max-height:600px) and (max-width:700px){.app .arena{--track-top:275px;--track-bottom:100px;--vehicle-width:40px}.app .driver{display:none}.app .countdown>span{display:none}.app .countdown strong{font-size:30px}}
+@media(max-height:450px) and (min-width:701px){.app .arena{--vehicle-width:42px}.app .lane-number,.app .lane-progress{font-size:7px}}
+
+/* Direct typing keeps native keyboard support without a visible form field. */
+.app .direct-typing-input{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;bottom:12px;left:16px}
+.app .direct-typing-input input{width:1px;height:1px;min-width:0;padding:0;border:0;font-size:16px;opacity:0}
+.app .typing-panel{padding:11px 18px;cursor:text}
+.app .typing-panel:focus-within{border-color:#85f1bc88}
+.app .passage{font-size:19px;line-height:1.5;min-height:0;max-height:57px;margin:8px 0;scrollbar-width:thin}
+.app .typing-bottom{margin-top:6px}
+.app .typing-bottom .primary{padding:7px 12px}
+.app .typing-bottom>span{font-size:9px}
+.app .typing-bottom .typing-error{color:#ffadb7}
+.app .arena{--track-top:250px}
+@media(max-width:700px){.app .typing-panel{padding:10px 13px}.app .passage{font-size:17px;line-height:1.5;max-height:51px;margin:7px 0}.app .typing-bottom>span{font-size:8px;max-width:205px}.app .typing-bottom .primary{padding:7px 9px}.app .hud{top:228px}.app .arena{--track-top:278px}}
+@media(max-height:600px) and (min-width:701px){.app .typing-panel{padding:8px 14px}.app .passage{font-size:16px;line-height:1.5;max-height:48px;margin:5px 0}.app .typing-bottom .primary{padding:5px 10px}.app .arena{--track-top:200px}}
+@media(max-height:600px) and (max-width:700px){.app .passage{font-size:15px;max-height:45px}.app .hud{top:210px}.app .arena{--track-top:245px}}
