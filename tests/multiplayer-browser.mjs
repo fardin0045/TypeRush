@@ -12,24 +12,17 @@ try {
     p.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
     await p.goto('http://127.0.0.1:5177/#/fight/friend');
   }
-  await guest.getByLabel('Or paste an invite code').fill('invalid');
-  await guest.getByRole('button', { name: 'Join with invite' }).click();
-  await guest.getByRole('alert').waitFor();
-  await guest.getByRole('button', { name: 'Start over' }).click();
+  await guest.getByLabel('Enter room code').fill('AB');
+  assert.ok(await guest.getByRole('button', { name: 'Join room', exact: true }).isDisabled());
   await host.getByLabel('Word difficulty').selectOption('Easy');
-  await host.getByRole('button', { name: 'Create invite' }).click();
-  await host.getByLabel('Your invite code').waitFor();
-  const invite = await host.getByLabel('Your invite code').inputValue();
-  await guest.getByLabel('Or paste an invite code').fill(invite);
-  await guest.getByRole('button', { name: 'Join with invite' }).click();
-  await guest.getByLabel('Your reply code').waitFor();
-  const reply = await guest.getByLabel('Your reply code').inputValue();
-  await host.getByLabel('Friend’s reply code').fill(reply);
-  await host.getByRole('button', { name: 'Connect to friend' }).click();
-  await guest.getByRole('button', { name: 'I’m ready' }).waitFor();
-  await guest.getByRole('button', { name: 'I’m ready' }).click();
-  await host.getByRole('button', { name: 'Start match' }).click();
-  await guest.waitForFunction(() => !document.querySelector('.peer-word input').disabled);
+  await host.getByRole('button', { name: 'Create room', exact: true }).click();
+  await host.getByLabel('Your room code').waitFor({ timeout: 20000 });
+  const code = await host.getByLabel('Your room code').inputValue();
+  assert.match(code, /^[A-HJ-NP-Z2-9]{4}$/);
+  await host.screenshot({ path: 'tests/room-code.png' });
+  await guest.getByLabel('Enter room code').fill(code.toLowerCase());
+  await guest.getByRole('button', { name: 'Join room', exact: true }).click();
+  await guest.waitForFunction(() => document.querySelector('.peer-word input') && !document.querySelector('.peer-word input').disabled);
   assert.equal(
     await guest.getByLabel('Multiplayer typing challenge').innerText(),
     await host.getByLabel('Multiplayer typing challenge').innerText(),
@@ -67,12 +60,12 @@ try {
   await guest.getByRole('heading', { name: 'You win!' }).waitFor();
   await host.getByRole('heading', { name: 'Your friend wins!' }).waitFor();
   await host.getByRole('button', { name: 'New match' }).click();
-  await guest.getByRole('button', { name: 'I’m ready' }).waitFor();
+  await guest.waitForFunction(() => document.querySelector('.peer-word input') && !document.querySelector('.peer-word input').disabled);
   await host.close();
   await guest.getByRole('button', { name: 'Start over' }).waitFor();
   assert.deepEqual(errors, []);
   console.log(
-    'PASS: real manual WebRTC code exchange, validation, synchronized words, remote punches/kicks, corrections, pause/resume, guest victory, rematch, disconnect and mobile layout.',
+    'PASS: real four-character room joining, automatic start, validation, synchronized words, remote punches/kicks, corrections, pause/resume, guest victory, rematch, disconnect and mobile layout.',
   );
 } finally {
   await browser.close();

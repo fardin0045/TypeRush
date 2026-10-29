@@ -1,0 +1,61 @@
+.app .arena { --grid-left: 55px; }
+.app .car-entrance {
+  position: relative;
+  animation: grid-arrival 1.35s cubic-bezier(.16,.75,.25,1) var(--entry-delay) both;
+}
+@keyframes grid-arrival {
+  from { opacity: 0; transform: translateX(-360px); }
+  25% { opacity: 1; }
+  82% { transform: translateX(4px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.app .start-line {
+  position: absolute; top: 0; bottom: 0;
+  left: calc(var(--grid-left) + var(--vehicle-width) * .95);
+  width: 3px; background: #e4fff3a6; pointer-events: none;
+  box-shadow: 0 0 14px #85f1bc26;
+}
+.app .start-line span {
+  position: absolute; top: 50%; left: 8px; writing-mode: vertical-rl;
+  font: 8px monospace; letter-spacing: 5px; color: #d0e9de8a;
+}
+.app .grid-slot {
+  position: absolute; left: var(--grid-left); top: 50%;
+  width: calc(var(--vehicle-width) * .95); height: 62%;
+  transform: translateY(-50%); border: 2px solid #dcece031;
+  border-left: 0; border-radius: 0 3px 3px 0; pointer-events: none;
+}
+.app .grid-lights {
+  position: absolute; left: calc(var(--grid-left) + 12px); top: -23px;
+  display: flex; gap: 7px; padding: 6px 10px; border-radius: 6px;
+  background: #09171f; border: 1px solid #89afac55; z-index: 8;
+}
+.app .grid-lights i { width: 8px; height: 8px; border-radius: 50%; background: #3c454b; }
+.app .grid-lights .lit { background: #ff566c; box-shadow: 0 0 10px #ff566c; }
+.app .grid-lights .go { background: #80ffc2; box-shadow: 0 0 10px #80ffc2; }
+.app .nitro-exhaust, .app .speed-trails { display: none; pointer-events: none; }
+.app .car.boosting { transition: left .09s ease-out; }
+.app .boosting .nitro-exhaust {
+  display: block; position: absolute; right: 91%; bottom: 24%;
+  width: 55%; height: 18%; transform-origin: right center;
+  background: linear-gradient(90deg, transparent, #4585ff 38%, #4feaff 72%, #efffff);
+  clip-path: polygon(0 50%, 30% 18%, 65% 27%, 100% 0, 100% 100%, 60% 75%, 22% 86%);
+  filter: drop-shadow(0 0 5px #53cfff); animation: nitro-flame .14s ease-in-out infinite alternate;
+}
+.app .boosting .underglow { background: #71eaff; opacity: .9; }
+.app .boosting .wheel { animation-duration: .08s; }
+.app .boosting .speed-trails { display: block; position: absolute; right: 35%; top: 25%; width: 130%; height: 70%; }
+.app .speed-trails i { position: absolute; right: 0; height: 1px; width: 100%; background: linear-gradient(90deg, transparent, #a6f4ff85); animation: nitro-trail .45s linear infinite; }
+.app .speed-trails i:nth-child(2) { top: 45%; width: 75%; animation-delay: -.15s; }
+.app .speed-trails i:nth-child(3) { top: 90%; width: 90%; animation-delay: -.3s; }
+.app .nitro-label { position: absolute; top: -13px; left: 35%; color: #9cf5ff; font: bold italic 9px monospace; letter-spacing: 2px; }
+@keyframes nitro-flame { to { transform: scaleX(.68) scaleY(.8); opacity: .7; } }
+@keyframes nitro-trail { from { transform: translateX(0); opacity: .8; } to { transform: translateX(-65px); opacity: 0; } }
+.app .arena.reduced .car-entrance { animation: none; }
+.app .arena.reduced .nitro-exhaust, .app .arena.reduced .speed-trails { display: none; }
+.app .arena.reduced .car { transition: none; }
+@media (max-width: 700px) { .app .arena { --grid-left: 25px; } .app .start-line span { font-size: 6px; } }
+@media (prefers-reduced-motion: reduce) {
+  .app .car-entrance { animation: none; }
+  .app .nitro-exhaust, .app .speed-trails { display: none !important; }
+}

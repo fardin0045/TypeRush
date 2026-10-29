@@ -1,25 +1,38 @@
-# Play TypeFight with a friend
+# TypeFight: play a friend
 
-Open TypeFight and select **Play a friend**, or visit `/#/fight/friend` on the deployed HTTPS site. Both players use their own device and keyboard.
+Both players must open the same deployed HTTPS website, then TypeFight → Play a friend.
 
-1. Host: choose the difficulty and select **Create invite**. Copy the invite code and send it privately to your friend.
-2. Friend: paste the invite into **Or paste an invite code**, then select **Join with invite**.
-3. Friend: copy the reply code and send it back to the host.
-4. Host: paste it into **Friend’s reply code** and select **Connect to friend**.
-5. Friend selects **I’m ready**, then the host selects **Start match**.
+1. Host chooses a difficulty and clicks **Create room**.
+2. Share the four-character code privately, for example K7MP.
+3. Friend enters it in **Enter room code** and clicks **Join room**.
+4. The handshake happens automatically and the countdown starts once both browsers connect.
 
-Both players receive the same word. Each correct letter alternates punching hands; the first to finish the word earns the kick. Backspace clears a mistake. Either player can block, dodge, pause or resume. The host can offer a new match after the finish; the friend must ready up again. Solo AI modes remain available.
+No reply code, account, API key or database setup is needed. Keep both tabs visible while playing. A hidden tab pauses the match. After a match, the host selects **New match** to start a rematch.
 
-## Connection and privacy
+## How it works
 
-No application backend, database, account, room registry or signaling service is used. The two codes carry the connection information manually. A public Google STUN service (`stun.l.google.com:19302`) helps discover network addresses; match data travels through a WebRTC data channel between the browsers. There is no TURN relay. Some mobile, corporate, VPN or restrictive NAT networks will not connect directly. Try the same Wi-Fi or another network and create new codes if connection fails.
+PeerJS Cloud (https://0.peerjs.com and wss://0.peerjs.com) provides the free shared signaling service. It maps the short code to the host and exchanges connection details automatically. Google STUN helps discover network addresses. Game state travels directly between browsers over WebRTC. Scores are not stored on the service. Rooms are scoped to the website origin: use the same production website, not different preview URLs.
 
-Codes can contain network-address information. Share them only with the intended opponent. Keep both game tabs open and visible. Changing tabs pauses the match; refreshing, navigating away or leaving closes the connection. To reconnect, start over with fresh codes.
+This depends on a public shared service. Its availability is outside this project's control. PeerJS recommends a dedicated PeerServer for high traffic. There is no TURN relay: some mobile, corporate, VPN and restrictive NAT networks cannot connect directly. Short codes simplify joining but do not remove that network limitation.
 
-This is a friendly host-authoritative match, not a tamper-proof ranked service. The host processes inputs in arrival order, so latency can favor the host. Multiplayer results are not added to solo local records. No camera or microphone access is requested.
+Official references: https://peerjs.com/server/cloud and https://peerjs.com/client/faq
 
-## Verification
+## Timeouts and retry
 
-`npm run check` builds and tests the production site, then connects two isolated browser sessions using real offer/reply codes. It verifies validation, matching words, remote input, mistakes, pause/resume, guest victory, rematch, disconnection and a mobile viewport. A successful local two-browser test does not guarantee connectivity across every real-world network. Test the public HTTPS URL on both intended devices after deployment.
+- Creating a room has a 15-second service timeout.
+- Waiting rooms expire after five minutes.
+- Connecting to an opponent times out after 30 seconds.
+- Leaving, refreshing or closing the host's tab closes the room. Use **Start over** and create a fresh room.
+- If the network blocks the connection, try a different Wi-Fi or disable a VPN.
 
-WebRTC connectivity reference: https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Connectivity
+Only two players are accepted. Codes use cryptographic randomness; collisions are retried. Four characters are an invitation convenience, not a password: anyone who guesses or receives the code could join first. Share only with your friend. The signaling service receives connection metadata; WebRTC peers can learn network addresses.
+
+## Fair play and storage
+
+The host runs the authoritative simulation. Matches are casual, not tamper-proof ranked play, and latency can favor the host. Multiplayer results are not added to solo records. There is no global leaderboard.
+
+## Deploy and verify
+
+Push the updated source, package.json, package-lock.json, vercel.json and public/_headers to GitHub and redeploy Vercel. No environment variables are needed. Cloudflare Pages also works with the new release ZIP. Both header configurations now permit the specific PeerJS signaling endpoint.
+
+npm run check tests real short-code joining, automatic start, gameplay, rematch, disconnect and mobile layout against the public service. This requires internet access and an available PeerJS Cloud service. It does not guarantee connectivity across every network. Test two physical devices on different networks after publishing.

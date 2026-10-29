@@ -94,6 +94,19 @@
   border: 1px solid #496173;
   border-radius: 6px;
 }
+.peer-lobby .room-code {
+  display: block;
+  width: min(100%, 280px);
+  margin: 10px 0 16px;
+  border: 1px solid #4f93a8;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font: 700 36px monospace;
+  letter-spacing: 12px;
+  text-align: center;
+  color: #9cf3e0;
+  background: #081521;
+}
 .peer-lobby small {
   display: block;
   line-height: 1.7;

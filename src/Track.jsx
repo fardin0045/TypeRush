@@ -1,4 +1,5 @@
 import React from 'react';
+import './race-effects.css';
 export const colors = ['#67efb4', '#a48bfa', '#ffbd65', '#5ecbff'];
 export function RacingCar({ color, id }) {
   return (
@@ -48,9 +49,10 @@ export function RacingCar({ color, id }) {
 export default function RaceTrack({ race, count, reduced }) {
   const solo = ['Practice', 'Time trial'].includes(race.mode);
   const cars = [{ name: 'YOU', cursor: race.cursor }, ...(!solo ? race.bots : [])];
+  const boosting = race.status === 'racing' && race.nitroUntil > race.elapsed;
   return (
     <section
-      className={`arena ${race.status === 'racing' ? 'moving' : ''} ${reduced ? 'reduced' : ''}`}
+      className={`arena ${race.status === 'racing' ? 'moving' : ''} ${boosting ? 'nitro-active' : ''} ${reduced ? 'reduced' : ''}`}
       aria-label="Live race circuit"
     >
       <div className="arena-top">
@@ -67,26 +69,37 @@ export default function RaceTrack({ race, count, reduced }) {
         ))}
       </div>
       <div className="track">
+        <div className="start-line" aria-hidden="true"><span>START</span></div>
+        <div className="grid-lights" aria-label={race.status === 'ready' ? 'Starting grid ready' : count !== null ? `Race countdown ${count || 'go'}` : 'Race underway'}>
+          {[0, 1, 2].map((light) => <i key={light} className={count === 0 || race.status === 'racing' ? 'go' : count !== null && light >= count - 1 ? 'lit' : ''} />)}
+        </div>
         <div className="finish">
           <span>FINISH</span>
         </div>
         {cars.map((car, i) => (
           <div className="lane" key={car.name}>
+            <div className="grid-slot" aria-hidden="true" />
             <span className="lane-number">0{i + 1}</span>
             <div className="car-route">
               <div
-                className="car"
+                className={`car ${i === 0 && boosting ? 'boosting' : ''}`}
                 style={{
                   left: `${Math.min(100, (car.cursor / race.text.length) * 100)}%`,
                   '--car-color': colors[i],
+                  '--entry-delay': `${i * 0.16}s`,
                 }}
               >
+                <div className="car-entrance">
                 <span className="driver">
                   {car.name}
                   {i === 0 && <small> YOU </small>}
                 </span>
                 <RacingCar color={colors[i]} id={i} />
                 <div className="underglow" />
+                <div className="nitro-exhaust" aria-hidden="true" />
+                <div className="speed-trails" aria-hidden="true"><i /><i /><i /></div>
+                {i === 0 && boosting && <span className="nitro-label">NITRO</span>}
+                </div>
               </div>
             </div>
             <span className="lane-progress">

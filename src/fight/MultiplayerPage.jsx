@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { createPeer } from './peer.js';
+import { createRoomPeer, validRoomCode } from './roomPeer.js';
 import { versusMatch, snapshot, validSnapshot, applyAction } from './versus.js';
 import { advanceMatch, startMatch, pauseMatch } from './combat.js';
 import { playCombatTimeline, fightSound } from './fightAudio.js';
@@ -26,6 +26,7 @@ export default function MultiplayerPage() {
     connected = useRef(false),
     epoch = useRef(1),
     ready = useRef(false),
+    autoReadyEpoch = useRef(0),
     last = useRef(performance.now()),
     received = useRef(0),
     remoteClock = useRef(0),
@@ -63,6 +64,10 @@ export default function MultiplayerPage() {
         Object.assign(model.current, m.state);
         received.current = performance.now();
         remoteClock.current = m.state.clock;
+        if (m.state.status === 'ready' && autoReadyEpoch.current !== m.epoch) {
+          autoReadyEpoch.current = m.epoch;
+          peer.current?.send({ type: 'ready', epoch: m.epoch, ready: true });
+        }
         refresh();
       }
       return;
@@ -75,9 +80,10 @@ export default function MultiplayerPage() {
       m?.type === 'ready' &&
       m.epoch === epoch.current &&
       ['ready', 'finished'].includes(model.current.status)
-    )
+    ) {
       ready.current = !!m.ready;
-    else applyAction(model.current, m, 'enemy', epoch.current);
+      if (ready.current && model.current.status === 'ready') start();
+    } else applyAction(model.current, m, 'enemy', epoch.current);
     sendState();
     refresh();
   }
@@ -90,26 +96,29 @@ export default function MultiplayerPage() {
     setRole(isHost ? 'host' : 'guest');
     connected.current = false;
     ready.current = false;
+    autoReadyEpoch.current = 0;
     epoch.current = 1;
     setOutgoing('');
     setStatus('gathering');
     model.current = versusMatch(level);
     last.current = performance.now();
     try {
-      const p = createPeer({
+      const p = createRoomPeer({
         onOpen: () => {
           if (isHost) sendState();
         },
         onMessage: receive,
+        onError: (message) => {
+          if (alive.current && operation === version.current) setError(message);
+        },
         onStatus: (value) => {
           if (alive.current && operation === version.current) connection(value);
         },
       });
       peer.current = p;
-      const code = isHost ? await p.offer() : await p.answer(incoming);
+      const code = isHost ? await p.host() : await p.join(incoming.trim().toUpperCase());
       if (alive.current && operation === version.current) {
         setOutgoing(code);
-        if (isHost) setStatus('invite');
       }
     } catch (e) {
       if (operation === version.current) {
@@ -119,17 +128,6 @@ export default function MultiplayerPage() {
       }
     } finally {
       if (alive.current && operation === version.current) setBusy(false);
-    }
-  }
-  async function accept() {
-    setError('');
-    setBusy(true);
-    try {
-      await peer.current.accept(incoming);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      if (alive.current) setBusy(false);
     }
   }
   function action(type, fields = {}) {
@@ -237,8 +235,8 @@ export default function MultiplayerPage() {
           <p className="eyebrow">TWO KEYBOARDS. ONE ARENA.</p>
           <h1>Fight a friend.</h1>
           <p>
-            Open this page on both devices. Exchange the invite and reply codes using your usual
-            messaging app. Keep both tabs open.
+            Create a room and share its four-character code. Your friend enters it here and the
+            match starts automatically. Keep both tabs open.
           </p>
           {!role && (
             <>
@@ -251,17 +249,16 @@ export default function MultiplayerPage() {
                 </select>
               </label>
               <button disabled={busy} onClick={() => setup(true)}>
-                Create invite
+                Create room
               </button>
             </>
           )}
-          {role === 'host' && <h2>1. Send your invite · 2. Paste their reply</h2>}
-          {role === 'guest' && <h2>Send your reply back to the host</h2>}
-          {outgoing && (
+          {role === 'host' && outgoing && <h2>Share this code with your friend</h2>}
+          {role === 'host' && outgoing && (
             <>
               <label>
-                {role === 'host' ? 'Your invite code' : 'Your reply code'}
-                <textarea readOnly value={outgoing} onFocus={(e) => e.target.select()} />
+                Your room code
+                <input className="room-code" readOnly value={outgoing} onFocus={(e) => e.target.select()} />
               </label>
               <button
                 onClick={async () => {
@@ -276,22 +273,27 @@ export default function MultiplayerPage() {
               </button>
             </>
           )}
-          {role !== 'guest' && (
+          {!role && (
             <>
               <label>
-                {role === 'host' ? 'Friend’s reply code' : 'Or paste an invite code'}
-                <textarea
+                Enter room code
+                <input
+                  className="room-code"
                   value={incoming}
-                  maxLength={100000}
-                  onChange={(e) => setIncoming(e.target.value)}
-                  placeholder={role === 'host' ? 'Paste reply here' : 'Paste invite here'}
+                  maxLength={4}
+                  autoComplete="off"
+                  autoCapitalize="characters"
+                  spellCheck={false}
+                  onChange={(e) => setIncoming(e.target.value.toUpperCase().replace(/[^A-Z2-9]/g, '').slice(0, 4))}
+                  onKeyDown={(e) => { if (e.key === 'Enter' && validRoomCode(incoming) && !busy) setup(false); }}
+                  placeholder="K7MP"
                 />
               </label>
               <button
-                disabled={busy || !incoming.trim()}
-                onClick={() => (role === 'host' ? accept() : setup(false))}
+                disabled={busy || !validRoomCode(incoming)}
+                onClick={() => setup(false)}
               >
-                {role === 'host' ? 'Connect to friend' : 'Join with invite'}
+                Join room
               </button>
             </>
           )}
@@ -300,12 +302,12 @@ export default function MultiplayerPage() {
               ? 'Preparing your connection…'
               : status === 'connecting'
                 ? 'Connecting to your friend…'
-                : status === 'invite'
-                  ? 'Invite ready. Waiting for their reply.'
+                : status === 'waiting'
+                  ? 'Waiting for your friend to join. This room stays open for five minutes.'
                   : status === 'failed' || status === 'disconnected'
-                    ? 'Connection unavailable. Try the same Wi-Fi or a different network, then create new codes.'
+                    ? 'Connection ended. Start over to create or join a new room.'
                     : role === 'guest'
-                      ? 'Waiting for the host to accept your reply…'
+                      ? 'Joining your friend…'
                       : ''}
           </p>
           {error && <p role="alert">{error}</p>}
@@ -315,8 +317,8 @@ export default function MultiplayerPage() {
             </button>
           )}
           <small>
-            No account or database. Public STUN helps browsers find each other; restrictive networks
-            may block a direct connection. Share codes only with your intended opponent.
+            Free room matching powered by PeerJS. No sign-up. Share the code privately; anyone
+            who knows it can join. Some networks may block direct connections.
           </small>
         </section>
       ) : (

@@ -81,6 +81,7 @@ try {
   await page.reload();
   await page.getByRole('button', { name: 'Start fight', exact: true }).waitFor();
   assert.deepEqual(errors, []);
+  await import('./race-effects-browser.mjs');
   await import('./multiplayer-browser.mjs');
   console.log(
     'PASS: production assets and CSP, route refresh, fight input, complete race, mobile layout, corrupt-storage recovery.',

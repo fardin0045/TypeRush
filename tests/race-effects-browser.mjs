@@ -1,0 +1,41 @@
+import assert from 'node:assert/strict';
+import { chromium } from '@playwright/test';
+
+const browser = await chromium.launch({ headless: true, ...(!process.env.CI ? { channel: 'chrome' } : {}) });
+try {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('http://127.0.0.1:5177/#/race');
+  await page.locator('.car-entrance').first().waitFor();
+  assert.equal(await page.locator('.grid-slot').count(), 4);
+  assert.equal(await page.locator('.car-entrance').first().evaluate(el => getComputedStyle(el).animationName), 'grid-arrival');
+  await page.waitForTimeout(1900);
+  assert.equal(await page.locator('.car-entrance').last().evaluate(el => getComputedStyle(el).opacity), '1');
+  await page.screenshot({ path: 'tests/race-start-grid.png' });
+  await page.getByRole('button', { name: 'Start race', exact: true }).click();
+  await page.waitForFunction(() => !document.querySelector('.input-row input').disabled);
+  const passage = await page.getByLabel('Typing passage', { exact: true }).innerText();
+  await page.keyboard.type(passage.slice(0, 10), { delay: 30 });
+  assert.equal(await page.locator('.car.boosting').count(), 1);
+  assert.equal(await page.locator('.car.boosting').evaluate(el => getComputedStyle(el).transitionDuration), '0.09s');
+  assert.equal(await page.locator('.grid-lights .go').count(), 3);
+  await page.screenshot({ path: 'tests/race-nitro.png' });
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('.car.boosting').count(), 0);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(1100);
+  assert.equal(await page.locator('.car.boosting').count(), 0);
+  await page.keyboard.type(passage.slice(10, 20), { delay: 30 });
+  assert.equal(await page.locator('.car.boosting').count(), 1);
+  await page.keyboard.type('~');
+  assert.equal(await page.locator('.car.boosting').count(), 0);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.reload();
+  assert.equal(await page.locator('.car-entrance').first().evaluate(el => getComputedStyle(el).animationName), 'none');
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  await page.screenshot({ path: 'tests/race-grid-mobile.png' });
+  assert.deepEqual(errors, []);
+  console.log('PASS: starting grid, entrance, typing nitro, pause, expiry, mistake reset, reduced motion and mobile.');
+} finally { await browser.close(); }

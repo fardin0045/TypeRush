@@ -182,7 +182,16 @@ export default function App() {
       tick(s, Math.max(0, (now - last.current) / 1000));
       last.current = now;
     }
+    const previousCursor = s.cursor;
     inputCharacter(s, char);
+    if (s.cursor > previousCursor) {
+      s.cleanStreak = s.elapsed - (s.lastCorrectAt ?? -10) < 0.65 ? (s.cleanStreak || 0) + 1 : 1;
+      s.lastCorrectAt = s.elapsed;
+      if (s.cleanStreak >= 8) s.nitroUntil = s.elapsed + 0.9;
+    } else {
+      s.cleanStreak = 0;
+      s.nitroUntil = 0;
+    }
     if (s.mode === 'Time trial' && s.cursor === s.text.length)
       s.text += ' ' + pickPassage(index + 1, difficulty).text;
     if (s.status === 'finished') record();

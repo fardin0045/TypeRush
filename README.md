@@ -82,4 +82,4 @@ The app uses lightweight 2D racing visuals, synthesized beeps, and CSS motion. I
 
 ## Play a friend
 
-TypeFight now supports two devices using manually exchanged WebRTC connection codes, with no application backend or database. Open **Play a friend** in TypeFight. See [MULTIPLAYER.md](MULTIPLAYER.md) for connection steps and network limitations. Solo AI modes are unchanged.
+TypeFight now supports two devices using one four-character room code and automatic PeerJS Cloud signaling, with no application backend or database to deploy. Open **Play a friend** in TypeFight. See [MULTIPLAYER.md](MULTIPLAYER.md) for connection steps and network limitations. Solo AI modes are unchanged.

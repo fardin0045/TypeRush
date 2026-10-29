@@ -1,6 +1,6 @@
 # Deploy TypeRush + TypeFight
 
-This release is a static browser game. Solo racing and fighting opponents are AI; friend matches connect two browsers directly. Solo scores and preferences are saved only in the current browser. No backend, database, login, paid API or environment variables are required. Manual-code browser-to-browser TypeFight is available at `/#/fight/friend`; see [MULTIPLAYER.md](MULTIPLAYER.md). Global leaderboards are not included.
+This release is a static browser game. Solo racing and fighting opponents are AI; friend matches connect two browsers directly. Solo scores and preferences are saved only in the current browser. No backend, database, login, paid API or environment variables are required. Four-character-room TypeFight is available at `/#/fight/friend`; see [MULTIPLAYER.md](MULTIPLAYER.md). Global leaderboards are not included.
 
 ## Prepare a release
 
@@ -70,7 +70,7 @@ Cloudflare Pages offers a Free plan; the supplied pages.dev subdomain avoids buy
 
 Check the deployed HTTPS URL on a desktop and a real phone: start each game, type, toggle sound, pause/resume, refresh a route, finish a match, and confirm no missing assets. Hosted headers and device audio must be checked on the actual deployment. Keep the previous Pages deployment available for rollback.
 
-Use one device on home Wi-Fi and another on mobile data for the multiplayer check. Exchange fresh invite/reply codes, ready/start, type on both devices, finish and rematch. Test disconnect handling. If the direct connection fails, try another network or disable a VPN; changing static hosting providers does not add a relay.
+Use one device on home Wi-Fi and another on mobile data for the multiplayer check. Create a room on one device, enter its four-character code on the other, wait for the automatic countdown, type on both devices, finish and rematch. Test disconnect handling. If the direct connection fails, try another network or disable a VPN; changing static hosting providers does not add a relay.
 
 In browser developer tools → Network, inspect the main document response for Content-Security-Policy and X-Content-Type-Options. Check the Console for errors. Test audio after clicking the sound control. On Vercel, optional preview-toolbar scripts may be blocked by the strict CSP; disable the toolbar rather than weakening the game's policy.
 
@@ -80,7 +80,7 @@ Verified locally: unit tests, production build, dependency audit, production CSP
 
 ## Play a friend
 
-TypeFight now supports two devices using manually exchanged WebRTC connection codes, with no application backend or database. Open **Play a friend** in TypeFight. See [MULTIPLAYER.md](MULTIPLAYER.md) for connection steps and network limitations. Solo AI modes are unchanged.
+TypeFight now supports two devices using one four-character room code and automatic PeerJS Cloud signaling, with no application backend or database to deploy. Open **Play a friend** in TypeFight. See [MULTIPLAYER.md](MULTIPLAYER.md) for connection steps and network limitations. Solo AI modes are unchanged.
 
 ## Release limits
 
